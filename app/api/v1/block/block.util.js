@@ -37,13 +37,16 @@ exports.getBlockData = (hash, func) => getBlock(hash)
  * @param hash
  * @param func
  */
-exports.getBlockInputsData = (hash, func) => getBlock(hash)
+const getBlockInputsData = hash => getBlock(hash)
   .then(data => {
     const inputs = data.tx.map(tx => {
       return tx.inputs
     });
 
-    return inputs;
+    return {
+      row_cnt: inputs.length,
+      input: inputs
+    };
   });
 
 /**
@@ -52,14 +55,27 @@ exports.getBlockInputsData = (hash, func) => getBlock(hash)
  * @param hash
  * @param func
  */
-exports.getBlockOutputData = (hash, func) => getBlock(hash)
+const getBlockOutputData = hash => getBlock(hash)
   .then(data => {
-    const output = data.tx.map(tx => {
-      return tx.output
+    const out = data.tx.map(tx => {
+      return tx.out
     });
 
-    return output;
+    return {
+      row_cnt: out.length,
+      output: out
+    };
   });
+
+/**
+ * tx inputs or output data 반환
+ *
+ * @type {{input: ((p1?:*)=>(*)), output: ((p1?:*)=>(*))}}
+ */
+exports.getBlockTxIoData = {
+  'input': getBlockInputsData,
+  'output': getBlockOutputData
+};
 
 /**
  * blockchain.info api call

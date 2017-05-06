@@ -1,6 +1,8 @@
 const router = require('express').Router();
-const {index} = require('./block.controller');
+const {show, showTxIo} = require('./block.controller');
 
-router.get('/:blockHash', index);
+router.get('/:blockHash', show);
+
+router.get('/:blockHash/:txIo', showTxIo);
 
 module.exports = router;
