@@ -67,8 +67,15 @@ exports.getBlockOutputData = (hash, func) => getBlock(hash)
  *
  * @param hash
  */
-const getBlock = (hash) => new Promise(resolve => request({
+const getBlock = (hash) => new Promise((resolve, reject) => request({
   url: BLOCK_DATA_API_URL.replace('$HASH-ITEM', hash)
 }, (err, res, body) => {
-  resolve(JSON.parse(body));
+  const statusCode = res.statusCode;
+
+  if (statusCode === 200) {
+    resolve(JSON.parse(body));
+  }
+  else if (statusCode === 500) {
+    reject(body);
+  }
 }));

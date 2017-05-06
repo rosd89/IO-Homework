@@ -76,8 +76,19 @@ describe('Block 확인 API ', _ => {
     }, (err, res, body) => {
       res.statusCode.should.be.equal(500);
       body.should.be.equal('Invalid Block Hash');
+
       done();
     });
+  });
+
+  it('Block 확인 API - 8 - 데이터 가져오기 함수 실패 테스트 ', done => {
+    getBlockData('fail')
+      .then(data => {})
+      .catch(err => {
+        err.should.be.equal('Invalid Block Hash');
+
+        done();
+      });
   });
 });
 
