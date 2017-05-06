@@ -3,6 +3,24 @@ const request = require('request');
 const BLOCK_DATA_API_URL = 'https://blockchain.info/block-index/$HASH-ITEM?format=json';
 
 /**
+ * blockchain.info api call
+ *
+ * @param hash
+ */
+const getBlock = hash => new Promise((resolve, reject) => request({
+  url: BLOCK_DATA_API_URL.replace('$HASH-ITEM', hash)
+}, (err, res, body) => {
+  const statusCode = res.statusCode;
+
+  if (statusCode === 200) {
+    resolve(JSON.parse(body));
+  }
+  else if (statusCode === 500) {
+    reject(body);
+  }
+}));
+
+/**
  * Block 데이터 가져오기
  *
  * @param hash
@@ -32,6 +50,18 @@ exports.getBlockData = (hash, func) => getBlock(hash)
   });
 
 /**
+ * tx inputs or output data 반환
+ *
+ * @param hash
+ * @param txIo
+ */
+exports.getBlockTxIoData = (hash, txIo) => {
+  return txIo === 'input' ?
+    getBlockInputsData(hash) :
+    getBlockOutputData(hash);
+};
+
+/**
  * Block input 데이터 가져오기
  *
  * @param hash
@@ -40,7 +70,7 @@ exports.getBlockData = (hash, func) => getBlock(hash)
 const getBlockInputsData = hash => getBlock(hash)
   .then(data => {
     const inputs = data.tx.map(tx => {
-      return tx.inputs
+      return tx.inputs;
     });
 
     return {
@@ -58,7 +88,7 @@ const getBlockInputsData = hash => getBlock(hash)
 const getBlockOutputData = hash => getBlock(hash)
   .then(data => {
     const out = data.tx.map(tx => {
-      return tx.out
+      return tx.out;
     });
 
     return {
@@ -66,31 +96,3 @@ const getBlockOutputData = hash => getBlock(hash)
       output: out
     };
   });
-
-/**
- * tx inputs or output data 반환
- *
- * @type {{input: ((p1?:*)=>(*)), output: ((p1?:*)=>(*))}}
- */
-exports.getBlockTxIoData = {
-  'input': getBlockInputsData,
-  'output': getBlockOutputData
-};
-
-/**
- * blockchain.info api call
- *
- * @param hash
- */
-const getBlock = (hash) => new Promise((resolve, reject) => request({
-  url: BLOCK_DATA_API_URL.replace('$HASH-ITEM', hash)
-}, (err, res, body) => {
-  const statusCode = res.statusCode;
-
-  if (statusCode === 200) {
-    resolve(JSON.parse(body));
-  }
-  else if (statusCode === 500) {
-    reject(body);
-  }
-}));

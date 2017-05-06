@@ -1,8 +1,6 @@
-const supertest = require('supertest');
 const should = require('should');
-const app = require('../../../index');
 const request = require('request');
-const {getBlockData, getBlockTxIoData} = require('./block.util');
+const {getBlockData, getBlockTxIoData} = require('../bin/block');
 
 describe('Block 확인 API ', _ => {
   const hash = '0000000000000bae09a7a393a8acded75aa67e46cb81f7acaa5ad94f9eacd103';
@@ -55,7 +53,7 @@ describe('Block 확인 API ', _ => {
   });
 
   it('Block 확인 API - 5 - input data 가져오기 함수 테스트 ', done => {
-    getBlockTxIoData['input'](hash).then(data => {
+    getBlockTxIoData(hash, 'input').then(data => {
       data.row_cnt.should.be.not.equal(0)
       data.input.should.be.not.equal([]);
 
@@ -64,7 +62,7 @@ describe('Block 확인 API ', _ => {
   });
 
   it('Block 확인 API - 6 - output data 가져오기 함수 테스트 ', done => {
-    getBlockTxIoData['output'](hash).then(data => {
+    getBlockTxIoData(hash, 'output').then(data => {
       data.row_cnt.should.be.not.equal(0)
       data.output.should.be.not.equal([]);
 
@@ -88,79 +86,6 @@ describe('Block 확인 API ', _ => {
       .then(data => {})
       .catch(err => {
         err.should.be.equal('Invalid Block Hash');
-
-        done();
-      });
-  });
-});
-
-describe('Block API Test - GET /api/v1/blocks ', () => {
-  const apiVersion = 'v1';
-  const apiRoot = `/api/${apiVersion}`;
-  const hash = '0000000000000bae09a7a393a8acded75aa67e46cb81f7acaa5ad94f9eacd103';
-
-  it('API Test: /:blockHash - 200 성공 ', done => {
-    supertest(app)
-      .get(`${apiRoot}/blocks/${hash}`)
-      .end((err, res) => {
-        res.statusCode.should.be.equal(200);
-        res.body.hash.should.be.equal(hash);
-
-        done();
-      });
-  });
-
-  it('API Test: /:blockHash - 404 실패 ', done => {
-    supertest(app)
-      .get(`${apiRoot}/blocks/fail`)
-      .end((err, res) => {
-        res.statusCode.should.be.equal(404);
-
-        done();
-      });
-  });
-
-  it('API Test: /:blockHash/:txIo - input - 200 성공 ', done => {
-    supertest(app)
-      .get(`${apiRoot}/blocks/${hash}/input`)
-      .end((err, res) => {
-        res.statusCode.should.be.equal(200);
-
-        res.body.row_cnt.should.be.not.equal(0);
-        res.body.input.should.be.not.equal([]);
-
-        done();
-      });
-  });
-
-  it('API Test: /:blockHash/:txIo - output - 200 성공 ', done => {
-    supertest(app)
-      .get(`${apiRoot}/blocks/${hash}/output`)
-      .end((err, res) => {
-        res.statusCode.should.be.equal(200);
-
-        res.body.row_cnt.should.be.not.equal(0);
-        res.body.output.should.be.not.equal([]);
-
-        done();
-      });
-  });
-
-  it('API Test: /:blockHash/:txIo - 404 실패 - Block Hash Invalid ', done => {
-    supertest(app)
-      .get(`${apiRoot}/blocks/fail/input`)
-      .end((err, res) => {
-        res.statusCode.should.be.equal(404);
-
-        done();
-      });
-  });
-
-  it('API Test: /:blockHash/:txIo - 404 실패 - txIo Invalid ', done => {
-    supertest(app)
-      .get(`${apiRoot}/blocks/${hash}/fail`)
-      .end((err, res) => {
-        res.statusCode.should.be.equal(404);
 
         done();
       });
