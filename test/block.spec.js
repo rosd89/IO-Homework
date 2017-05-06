@@ -33,6 +33,7 @@ describe('Block 확인 API ', _ => {
         return tx.inputs
       });
 
+      res.statusCode.should.be.equal(200);
       inputs.should.be.not.equal([]);
 
       done();
@@ -46,6 +47,7 @@ describe('Block 확인 API ', _ => {
         return tx.out
       });
 
+      res.statusCode.should.be.equal(200);
       output.should.be.not.equal([]);
 
       done();
