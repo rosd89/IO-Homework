@@ -7,6 +7,7 @@ const {getBlockData, getBlockInputsData, getBlockOutputData} = require('./block.
 describe('Block 확인 API ', _ => {
   const hash = '0000000000000bae09a7a393a8acded75aa67e46cb81f7acaa5ad94f9eacd103';
   const url = `https://blockchain.info/block-index/${hash}?format=json`;
+  const failUrl = `https://blockchain.info/block-index/fail?format=json`;
 
   it('Block 확인 API - 1 - 데이터 가져오기 테스트 ', done => {
     request({url}, (err, res, body) => {
@@ -61,10 +62,20 @@ describe('Block 확인 API ', _ => {
     });
   });
 
-  it('Block 확인 API - 5 - output data 가져오기 함수 테스트 ', done => {
+  it('Block 확인 API - 6 - output data 가져오기 함수 테스트 ', done => {
     getBlockOutputData(hash).then(output => {
       output.should.be.not.equal([]);
 
+      done();
+    });
+  });
+
+  it('Block 확인 API - 7 - 데이터 가져오기 실패 테스트', done => {
+    request({
+      url: failUrl
+    }, (err, res, body) => {
+      res.statusCode.should.be.equal(500);
+      body.should.be.equal('Invalid Block Hash');
       done();
     });
   });
