@@ -97,12 +97,22 @@ describe('Block API - GET /api/v1/block ', () => {
   const apiRoot = `/api/${apiVersion}`;
   const hash = '0000000000000bae09a7a393a8acded75aa67e46cb81f7acaa5ad94f9eacd103';
 
-  it('api : /:blockHash - 200 성공 ', (done) => {
+  it('api: /:blockHash - 200 성공 ', done => {
     supertest(app)
       .get(`${apiRoot}/block/${hash}`)
       .end((err, res) => {
         res.statusCode.should.be.equal(200);
         res.body.hash.should.be.equal(hash);
+
+        done();
+      });
+  });
+
+  it('api: /:blockHash - 404 실패', done => {
+    supertest(app)
+      .get(`${apiRoot}/block/fail`)
+      .end((err, res) => {
+        res.statusCode.should.be.equal(404);
 
         done();
       });

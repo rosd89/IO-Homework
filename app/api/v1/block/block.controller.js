@@ -16,4 +16,5 @@ const {getBlockData, getBlockInputsData, getBlockOutputData} = require('./block.
  * @param res
  */
 exports.index = (req, res) => getBlockData(req.params.blockHash)
-  .then(data => success200RetObj(res, data));
+  .then(data => success200RetObj(res, data))
+  .catch(_ => error404NotFound(res));
