@@ -7,7 +7,7 @@ const BLOCK_DATA_API_URL = 'https://blockchain.info/block-index/$HASH-ITEM?forma
  *
  * @param hash
  */
-const getBlock = hash => new Promise((resolve, reject) => request({
+const getBlockData = hash => new Promise((resolve, reject) => request({
   url: BLOCK_DATA_API_URL.replace('$HASH-ITEM', hash)
 }, (err, res, body) => {
   const statusCode = res.statusCode;
@@ -21,12 +21,19 @@ const getBlock = hash => new Promise((resolve, reject) => request({
 }));
 
 /**
- * Block 데이터 가져오기
+ * Block 데이터
+ *
+ * return {
+ *  hashBlock
+ *  트랜잭션(tx) 수
+ *  평균 트랜잭션의 값(value)
+ *  평균 트랜잭션의 수수료(fee)
+ *  평균 트랜잭션의 크기(size)
+ * }
  *
  * @param hash
- * @param func
  */
-exports.getBlockData = (hash, func) => getBlock(hash)
+exports.getBlockInfo = hash => getBlockData(hash)
   .then(data => {
     let sumSize = 0;
     let sumValue = 0;
@@ -52,47 +59,53 @@ exports.getBlockData = (hash, func) => getBlock(hash)
 /**
  * tx inputs or output data 반환
  *
+ * return {
+ *  row_cnt: 배열의 길이
+ *  input or output: tx의 input 혹은 output 정보
+ * }
+ *
  * @param hash
  * @param txIo
  */
-exports.getBlockTxIoData = (hash, txIo) => {
-  return txIo === 'input' ?
-    getBlockInputsData(hash) :
-    getBlockOutputData(hash);
+exports.getBlockTxIoInfo = (hash, txIo) => getBlockData(hash)
+  .then(data => {
+    if (txIo !== 'input' && txIo !== 'output') {
+      throw `txId: ${txIo} - invalid option`;
+    }
+
+    return txIo === 'input' ?
+      getBlockInputsInfo(data) :
+      getBlockOutputInfo(data);
+  });
+
+/**
+ * Block Data - inputs 데이터 가져오기
+ *
+ * @param data
+ */
+const getBlockInputsInfo = data => {
+  const inputs = data.tx.map(tx => {
+    return tx.inputs;
+  });
+
+  return {
+    row_cnt: inputs.length,
+    input: inputs
+  };
 };
 
 /**
- * Block input 데이터 가져오기
+ * Block Data - out 데이터 가져오기
  *
- * @param hash
- * @param func
+ * @param data
  */
-const getBlockInputsData = hash => getBlock(hash)
-  .then(data => {
-    const inputs = data.tx.map(tx => {
-      return tx.inputs;
-    });
-
-    return {
-      row_cnt: inputs.length,
-      input: inputs
-    };
+const getBlockOutputInfo = data => {
+  const out = data.tx.map(tx => {
+    return tx.out;
   });
 
-/**
- * Block output 데이터 가져오기
- *
- * @param hash
- * @param func
- */
-const getBlockOutputData = hash => getBlock(hash)
-  .then(data => {
-    const out = data.tx.map(tx => {
-      return tx.out;
-    });
-
-    return {
-      row_cnt: out.length,
-      output: out
-    };
-  });
+  return {
+    row_cnt: out.length,
+    output: out
+  };
+};
