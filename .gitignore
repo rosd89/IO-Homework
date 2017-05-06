@@ -1,0 +1,8 @@
+# ide 설정파일
+.idea
+IO-Homework.iml
+
+# npm lib 폴더
+node_modules
+
+npm-debug.log

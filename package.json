@@ -1,0 +1,29 @@
+{
+  "name": "io_homework",
+  "version": "1.0.0",
+  "description": "homework",
+  "scripts": {
+    "start": "node bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://rosd89@github.com/rosd89/IO-Homework.git"
+  },
+  "author": "rosd89",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rosd89/IO-Homework/issues"
+  },
+  "homepage": "https://github.com/rosd89/IO-Homework#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.3.0",
+    "should": "^11.2.1",
+    "supertest": "^3.0.0"
+  }
+}
