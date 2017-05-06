@@ -13,7 +13,7 @@ const apiVersion = 'v1';
 const apiRoot = `/api/${apiVersion}`;
 const block = require('./api/v1/block/block');
 
-app.use(apiRoot + '/block', block);
+app.use(apiRoot + '/blocks', block);
 
 app.use((req, res) => error404NotFound(res));
 

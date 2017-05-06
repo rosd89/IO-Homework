@@ -21,14 +21,13 @@ exports.getBlockData = (hash, func) => getBlock(hash)
       }
     }
 
-    const txCnt = data.n_tx;
+    const n_tx = data.n_tx;
     return {
       hash: data.hash,
-      txCnt,
-      tx: data.tx,
+      n_tx,
       fee: data.fee,
-      avgSize: (sumSize / txCnt).toFixed(2),
-      avgValue: (sumValue / txCnt).toFixed(2)
+      avg_size: (sumSize / n_tx).toFixed(2),
+      avg_value: (sumValue / n_tx).toFixed(2)
     };
   });
 

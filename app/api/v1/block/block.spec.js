@@ -92,14 +92,14 @@ describe('Block 확인 API ', _ => {
   });
 });
 
-describe('Block API - GET /api/v1/block ', () => {
+describe('Block API - GET /api/v1/blocks ', () => {
   const apiVersion = 'v1';
   const apiRoot = `/api/${apiVersion}`;
   const hash = '0000000000000bae09a7a393a8acded75aa67e46cb81f7acaa5ad94f9eacd103';
 
   it('api: /:blockHash - 200 성공 ', done => {
     supertest(app)
-      .get(`${apiRoot}/block/${hash}`)
+      .get(`${apiRoot}/blocks/${hash}`)
       .end((err, res) => {
         res.statusCode.should.be.equal(200);
         res.body.hash.should.be.equal(hash);
@@ -110,7 +110,7 @@ describe('Block API - GET /api/v1/block ', () => {
 
   it('api: /:blockHash - 404 실패', done => {
     supertest(app)
-      .get(`${apiRoot}/block/fail`)
+      .get(`${apiRoot}/blocks/fail`)
       .end((err, res) => {
         res.statusCode.should.be.equal(404);
 
