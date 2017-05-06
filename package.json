@@ -4,7 +4,7 @@
   "description": "homework",
   "scripts": {
     "start": "node bin/index.js",
-    "test": "node_modules/.bin/mocha test/block.spec.js"
+    "test": "node_modules/.bin/mocha --timeout 10000 test/block.spec.js"
   },
   "repository": {
     "type": "git",
