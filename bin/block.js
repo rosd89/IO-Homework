@@ -67,16 +67,19 @@ exports.getBlockInfo = hash => getBlockData(hash)
  * @param hash
  * @param txIo
  */
-exports.getBlockTxIoInfo = (hash, txIo) => getBlockData(hash)
-  .then(data => {
-    if (txIo !== 'input' && txIo !== 'output') {
+exports.getBlockTxIoInfo = (hash, txIo) => {
+  if (txIo !== 'input' && txIo !== 'output') {
+    return new Promise(_ => {
       throw `txId: ${txIo} - invalid option`;
-    }
+    });
+  }
 
-    return txIo === 'input' ?
+  return getBlockData(hash)
+    .then(data => txIo === 'input' ?
       getBlockInputsInfo(data) :
-      getBlockOutputInfo(data);
-  });
+      getBlockOutputInfo(data)
+    );
+};
 
 /**
  * Block Data - inputs 데이터 가져오기
